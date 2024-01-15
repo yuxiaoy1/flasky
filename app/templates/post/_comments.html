@@ -1,0 +1,50 @@
+<ul
+  class="comments mt-3 mb-3 list-group list-group-flush border-top border-bottom"
+>
+  {% for comment in comments %}
+  <li class="list-group-item list-group-item-action">
+    <div class="d-flex">
+      <div style="width: 48px" class="flex-shrink-0">
+        <a href="{{ url_for('user.index', username=comment.author.username) }}">
+          <img class="rounded" src="{{ comment.author.avatar(size=40) }}" />
+        </a>
+      </div>
+      <div class="flex-grow-1">
+        <div class="float-end">{{ moment(comment.timestamp).fromNow() }}</div>
+        <div>
+          <a
+            href="{{ url_for('user.index', username=comment.author.username) }}"
+            >{{ comment.author.username }}</a
+          >
+        </div>
+        <div>
+          {% if comment.disabled %}
+          <div><em>This comment has been disabled by a moderator.</em></div>
+          {% endif %} {% if moderate or not comment.disabled %} {% if
+          comment.body_html %} {{ comment.body_html | safe }} {% else %} {{
+          comment.body }} {% endif %} {% endif %}
+        </div>
+        {% if moderate %} {% if comment.disabled %}
+        <a
+          class="badge text-bg-primary link-underline link-underline-opacity-0"
+          href="{{ url_for('post.moderate_enable', id=comment.id) }}"
+          >Enable</a
+        >
+        {% else %}
+        <a
+          class="badge text-bg-secondary link-underline link-underline-opacity-0"
+          href="{{ url_for('post.moderate_disable', id=comment.id) }}"
+          >Disable</a
+        >
+        {% endif %}
+        <a
+          href="{{ url_for('post.get_post', id=comment.post.id) }}"
+          class="float-end"
+          ><em>Go to post</em></a
+        >
+        {% endif %}
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>

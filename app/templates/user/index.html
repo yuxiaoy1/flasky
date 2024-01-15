@@ -1,0 +1,84 @@
+{% extends 'base.html' %}{% from 'bootstrap5/pagination.html' import
+render_pagination %} {% block title %} Flasky - {{ user.username }} {% endblock
+%} {% block content %}
+<div class="row mb-2">
+  <div class="col-md-3 d-none d-md-block">
+    <img
+      src="{{ user.avatar(size=256) }}"
+      class="img-fluid rounded"
+      alt="{{ user.username }}'s avatar"
+    />
+  </div>
+  <div class="col-md-9">
+    <h1>{{ user.username }}</h1>
+    {% if user.name or user.location %}
+    <p>
+      {% if user.name %}{{ user.name }}{% endif %} {% if user.location %} From
+      <a href="https://www.google.com/maps/?q={{ user.location }}">
+        {{ user.location }}
+      </a>
+      {% endif %}
+    </p>
+    {% endif %} {% if current_user.is_admin() %}
+    <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+    {% endif %} {% if user.about_me %}
+    <p>{{ user.about_me }}</p>
+    {% endif %}
+    <p>
+      Member since {{ moment(user.member_since).format('L') }}. Last seen {{
+      moment(user.last_seen).fromNow() }}.
+    </p>
+    <p>
+      {% if current_user.can(Permission.FOLLOW) and user != current_user %} {%
+      if not current_user.is_following(user) %}
+      <a
+        href="{{ url_for('user.follow', username=user.username) }}"
+        class="btn btn-primary btn-sm"
+        >Follow</a
+      >
+      {% else %}
+      <a
+        href="{{ url_for('user.unfollow', username=user.username) }}"
+        class="btn btn-secondary btn-sm"
+        >Unfollow</a
+      >
+      {% endif %} {% endif %}
+      <a
+        href="{{ url_for('user.followed_by', username=user.username) }}"
+        class="link-underline link-underline-opacity-0"
+        >Followers: {{ user.followed_count }}</a
+      >
+      <a
+        href="{{ url_for('user.following', username=user.username) }}"
+        class="link-underline link-underline-opacity-0"
+        >Following: {{ user.following_count }}</a
+      >
+      {% if current_user.is_authenticated and user != current_user and
+      user.is_following(current_user) %} |
+      <span class="badge badge-secondary">Follows you</span>
+      {% endif %}
+    </p>
+    <p>
+      {% if user == current_user %}
+      <a
+        class="btn btn-primary btn-sm"
+        href="{{ url_for('user.edit_profile') }}"
+        >Edit Profile</a
+      >
+      {% endif %} {% if current_user.is_admin() %}
+      <a
+        class="btn btn-danger btn-sm"
+        href="{{ url_for('user.edit_profile_admin', id=user.id) }}"
+      >
+        Edit Profile [Admin]
+      </a>
+      {% endif %}
+    </p>
+  </div>
+</div>
+<hr />
+<h3>Posts by {{ user.username }}</h3>
+{% if posts.items | length %} {% include 'post/_posts.html' %} {{
+render_pagination(posts, align='right') }} {% else %}
+<p>There is no posts.</p>
+{% endif %} {% endblock %}

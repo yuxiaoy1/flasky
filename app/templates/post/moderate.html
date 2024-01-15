@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% from 'bootstrap5/pagination.html' import
+render_pagination %}{% block title %} Flasky - Comment Moderation {% endblock %}
+{% block content %}
+<h3>Comment Moderation</h3>
+{% if comments.items | length %} {% include 'post/_comments.html' %}{{
+render_pagination(comments, align='right')}} {% else %}
+<p>There is no comments.</p>
+{% endif %} {% endblock %}

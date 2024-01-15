@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% from 'bootstrap5/form.html' import render_form %}{%
+from 'bootstrap5/pagination.html' import render_pagination %}{% block title %}
+Flasky - Post {% endblock %} {% block content %} {% include 'post/_posts.html'
+%}
+<h3>Comments</h3>
+{% if current_user.can(Permission.COMMENT) %}
+<div class="row mb-3">
+  <div class="col-md-4">{{ render_form(form, button_size='sm') }}</div>
+</div>
+{% endif %} {% if comments.items | length %} {% include 'post/_comments.html' %}
+{{ render_pagination(comments, align='right') }} {% else %}
+<p>There is no comments.</p>
+{% endif %} {% endblock %}

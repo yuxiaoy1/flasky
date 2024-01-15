@@ -1,0 +1,63 @@
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>{% block title %}Flasky{% endblock %}</title>
+    {{ bootstrap.load_css() }}{% block style %} {% endblock %}
+  </head>
+  <body>
+    {% block nav %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('post.index') }}">Flasky</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbar"
+          aria-controls="navbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto">
+            {{ render_nav_item('post.index', 'Home') }} {% if
+            current_user.is_anonymous %} {{ render_nav_item('auth.login',
+            'Login') }} {% else %}{{ render_nav_item('user.index', 'Profile',
+            username=current_user.username) }} {% if
+            current_user.can(Permission.MODERATE) %} {{
+            render_nav_item('post.moderate', 'Moderate Comments') }} {% endif %}
+            {{ render_nav_item('auth.logout', 'Logout') }} {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {% endblock %}
+    <main class="container">
+      {% for message in get_flashed_messages(with_categories=True) %}
+      <div
+        class="alert alert-{{ 'info' if message[0] == 'message' else message[0] }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message[1] }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %}
+      <div class="mb-3">{% block content %} {% endblock content %}</div>
+    </main>
+    {% block scripts %} {{ bootstrap.load_js() }} {{ moment.include_moment() }}
+    {% endblock %}
+  </body>
+</html>

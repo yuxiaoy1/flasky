@@ -1,0 +1,15 @@
+aiosmtpd
+bleach
+bootstrap-flask
+email-validator
+flask
+flask-httpauth
+flask-sqlalchemy
+flask-wtf
+flask-mailman
+flask-moment
+flask-login
+flask-pagedown
+faker
+markdown
+pyjwt

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}{% from 'bootstrap5/form.html' import render_form %} {%
+from 'bootstrap5/pagination.html' import render_pagination %}{% block content %}
+<h3>Hello {{ current_user.username }}!</h3>
+{% if current_user.can(Permission.WRITE) %}
+<div class="row">
+  <div class="col-md-6">{{ render_form(form, button_size='sm') }}</div>
+</div>
+{% endif %}
+<ul class="nav nav-tabs mt-3">
+  <li class="nav-link{% if not show_following %} active{% endif %}">
+    <a href="{{ url_for('post.show_all') }}">All</a>
+  </li>
+  <li class="nav-link{% if show_following %} active{% endif %}">
+    <a href="{{ url_for('post.show_following') }}">Following</a>
+  </li>
+</ul>
+{% if posts.items | length %} {% include 'post/_posts.html' %}{{
+render_pagination(posts, align='right')}} {% else %}
+<p>There is no posts.</p>
+{% endif %} {% endblock %} {% block scripts %} {{ super() }} {{
+pagedown.include_pagedown() }} {% endblock %}
